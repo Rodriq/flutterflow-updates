@@ -892,7 +892,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                                                                 0.0, 0.0),
                                                     color: FlutterFlowTheme.of(
                                                             context)
-                                                        .primary,
+                                                        .tertiary,
                                                     textStyle: FlutterFlowTheme
                                                             .of(context)
                                                         .titleMedium
