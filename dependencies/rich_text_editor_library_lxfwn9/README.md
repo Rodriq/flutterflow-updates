@@ -1,4 +1,4 @@
-# test error
+# rich-text-editor-library
 
 A new Flutter project.
 
