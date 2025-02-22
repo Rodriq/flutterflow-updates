@@ -35,12 +35,12 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
       debugLogDiagnostics: true,
       refreshListenable: appStateNotifier,
       navigatorKey: appNavigatorKey,
-      errorBuilder: (context, state) => HomePageWidget(),
+      errorBuilder: (context, state) => HomeWidget(),
       routes: [
         FFRoute(
           name: '_initialize',
           path: '/',
-          builder: (context, _) => HomePageWidget(),
+          builder: (context, _) => HomeWidget(),
         ),
         FFRoute(
           name: HomePageWidget.routeName,
@@ -128,9 +128,9 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           builder: (context, params) => RichtextWidget(),
         ),
         FFRoute(
-          name: HWidget.routeName,
-          path: HWidget.routePath,
-          builder: (context, params) => HWidget(),
+          name: HomeWidget.routeName,
+          path: HomeWidget.routePath,
+          builder: (context, params) => HomeWidget(),
         )
       ].map((r) => r.toRoute(appStateNotifier)).toList(),
       observers: [routeObserver],

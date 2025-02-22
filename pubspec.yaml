@@ -170,6 +170,7 @@ flutter:
     - dependencies/rich_text_editor_library_lxfwn9/assets/pdfs/
     - dependencies/rich_text_editor_library_lxfwn9/assets/jsons/
 
+    - assets/environment_values/
   fonts:
     - family: 'Codec Pro'
       fonts:

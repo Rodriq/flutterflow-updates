@@ -18,4 +18,4 @@ export '/dicom/dicom_widget.dart' show DicomWidget;
 export '/web_view_test/web_view_test_widget.dart' show WebViewTestWidget;
 export '/camera_maker/camera_maker_widget.dart' show CameraMakerWidget;
 export '/richtext/richtext_widget.dart' show RichtextWidget;
-export '/h/h_widget.dart' show HWidget;
+export '/home/home_widget.dart' show HomeWidget;
