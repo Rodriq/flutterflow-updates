@@ -34,9 +34,6 @@ jobs:
           password: ${{ secrets.CPANEL_FTP_PASSWORD }}  # cPanel FTP password
           server-dir: ${{ secrets.CPANEL_FTP_PATH }}  # Remote path on the server
           local-dir: ./build/web/
-          port: 21
-          protocol: ftp
-          timeout: 300000
           exclude: |
             **/.git*
             **/.git*/**
