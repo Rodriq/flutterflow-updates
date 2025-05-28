@@ -20,7 +20,7 @@ String? uploadToText(FFUploadedFile? lkn) {
 }
 
 FFUploadedFile? stringToFileType(String? fileString) {
-  // convert base64 string to uploaded file type
+  // convert base64 string to uploaded file type.
   if (fileString == null) {
     return null;
   }
