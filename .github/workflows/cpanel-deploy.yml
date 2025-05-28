@@ -5,11 +5,11 @@ on:
     branches: [ cpanel ]
 
 jobs:
-  build_and_deploy:
+  deploy:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Checkout repository
+    - name: Checkout code
       uses: actions/checkout@v4
       
     - name: Setup Flutter
@@ -30,20 +30,22 @@ jobs:
     - name: List build contents (for debugging)
       run: ls -la build/web/
       
-    - name: Deploy to cPanel via FTP
-      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
-      with:
-        server: ${{ secrets.CPANEL_FTP_HOST }}
-        username: ${{ secrets.CPANEL_FTP_USERNAME }}
-        password: ${{ secrets.CPANEL_FTP_PASSWORD }}
-        local-dir: ./build/web/
-        server-dir: ${{ secrets.CPANEL_FTP_PATH }}/
-        port: 21
-        protocol: ftp
-        timeout: 120000
-        log-level: verbose
-        exclude: |
-          **/.git*
-          **/.git*/**
-          **/node_modules/**
-          .github/
+    - name: Install lftp
+      run: |
+        sudo apt-get update
+        sudo apt-get install lftp
+        
+    - name: Deploy to cPanel
+      env:
+        FTP_SERVER: ${{ secrets.CPANEL_FTP_HOST }}
+        FTP_USERNAME: ${{ secrets.CPANEL_FTP_USERNAME }}
+        FTP_PASSWORD: ${{ secrets.CPANEL_FTP_PASSWORD }}
+        FTP_PATH: ${{ secrets.CPANEL_FTP_PATH }}
+      run: |
+        cd build/web
+        lftp -e "set ssl:verify-certificate no; open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_SERVER; mirror -Rve --exclude .git --exclude .github --exclude **/.DS_Store . $FTP_PATH; quit"
+        
+    - name: Verify deployment
+      run: |
+        echo "✅ Flutter web app deployed successfully to cPanel!"
+        echo "🌐 Check your website to verify the deployment"
