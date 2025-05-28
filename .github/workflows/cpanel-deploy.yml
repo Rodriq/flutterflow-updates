@@ -1,8 +1,8 @@
-name: Deploy Flutter Web to cPanel (SFTP)
+name: Deploy Flutter Web to cPanel
 
 on:
   push:
-    branches: [ cpanel ]  # Specify branch to trigger deployment
+    branches: [ cpanel ]
 
 jobs:
   build_and_deploy:
@@ -10,29 +10,40 @@ jobs:
     
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4 
+      uses: actions/checkout@v4
       
     - name: Setup Flutter
-      uses: subosito/flutter-action@v2  
+      uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.27.3'  # Specify the Flutter version to use
-        channel: 'stable'  # Use the stable channel for Flutter
+        flutter-version: '3.27.3'
+        channel: 'stable'
         
     - name: Get dependencies
-      run: flutter pub get  
+      run: flutter pub get
       
     - name: Enable web
-      run: flutter config --enable-web 
+      run: flutter config --enable-web
       
     - name: Build web
-      run: flutter build web --release 
+      run: flutter build web --release --web-renderer html
       
-    - name: Deploy via SFTP
-      uses: wlixcc/SFTP-Deploy-Action@v1.2.4  # Action to deploy files via SFTP
+    - name: List build contents (for debugging)
+      run: ls -la build/web/
+      
+    - name: Deploy to cPanel via FTP
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
       with:
-        server: ${{ secrets.CPANEL_FTP_HOST }}  # cPanel FTP server address
-        username: ${{ secrets.CPANEL_FTP_USERNAME }}  # cPanel FTP username
-        password: ${{ secrets.CPANEL_FTP_PASSWORD }}  # cPanel FTP password
-        local_path: './build/web/*'  # Path to the built web files
-        remote_path: ${{ secrets.CPANEL_FTP_PATH }}  # Remote path on the server
-        delete_remote_files: false  # Deletes remote files not present in local path
+        server: ${{ secrets.CPANEL_FTP_HOST }}
+        username: ${{ secrets.CPANEL_FTP_USERNAME }}
+        password: ${{ secrets.CPANEL_FTP_PASSWORD }}
+        local-dir: ./build/web/
+        server-dir: ${{ secrets.CPANEL_FTP_PATH }}/
+        port: 21
+        protocol: ftp
+        timeout: 120000
+        log-level: verbose
+        exclude: |
+          **/.git*
+          **/.git*/**
+          **/node_modules/**
+          .github/
