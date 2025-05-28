@@ -5,45 +5,37 @@ on:
     branches: [ cpanel ]
 
 jobs:
-  job1:
-    name: test app and build web-release
-    runs-on: macos-latest
+  build_and_deploy:
+    name: Build and Deploy to cPanel
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+        uses: actions/checkout@v4
+        
+      - uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
-          java-version: "12.x"
+          java-version: "17"
           cache: gradle
+          
       - name: Install Flutter
         uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.27.3'
           channel: 'stable'
           cache: true
+          
       - name: Install dependencies
         run: flutter pub get
-      - name: Start Web Release Build
-        run: flutter build web --web-renderer canvaskit  --release
-      - name: Upload Web Build Files
-        uses: actions/upload-artifact@v2
-        with:
-          name: web-release
-          path: ./build/web
-  job2:
-    name: trasnfer web-release to server
-    needs : job1
-    runs-on: macos-latest
-    steps:
-      - name: Download Web Release
-        uses: actions/download-artifact@v2
-        with:
-          name: web-release
-      - name: Sync Files TO Demo CPANEL
-        uses: SamKirkland/FTP-Deploy-Action@4.1.0
+        
+      - name: Build Web Release
+        run: flutter build web --web-renderer canvaskit --release
+        
+      - name: Deploy to cPanel
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
           server: ${{ secrets.CPANEL_FTP_HOST }}
           username: ${{ secrets.CPANEL_FTP_USERNAME }}
           password: ${{ secrets.CPANEL_FTP_PASSWORD }}
-          server-dir: ${{ secrets.CPANEL_FTP_PATH }}
+          local-dir: ./build/web/
+          server-dir: ${{ secrets.CPANEL_FTP_PATH }}/
