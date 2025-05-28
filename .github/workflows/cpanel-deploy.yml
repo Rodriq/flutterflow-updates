@@ -11,12 +11,14 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.27.3'  # Replace with your Flutter version
+          channel: 'stable'
+          cache: true
 
       - name: Install Dependencies
         run: flutter pub get
@@ -25,11 +27,17 @@ jobs:
         run: flutter build web --release
 
       - name: Deploy to cPanel via FTP
-        uses: SamKirkland/FTP-Deploy-Action@4.3.4
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.CPANEL_FTP_HOST }}  # cPanel FTP server address
           username: ${{ secrets.CPANEL_FTP_USERNAME }}  # cPanel FTP username
           password: ${{ secrets.CPANEL_FTP_PASSWORD }}  # cPanel FTP password
           server-dir: ${{ secrets.CPANEL_FTP_PATH }}  # Remote path on the server
-          local-dir: build/web
-          dangerous-clean-slate: true
+          local-dir: ./build/web/
+          port: 21
+          protocol: ftp
+          timeout: 300000
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
