@@ -1,38 +1,35 @@
-name: Deploy Flutter Web to cPanel (SFTP)
+name: Deploy Flutter Web to cPanel
 
 on:
   push:
-    branches: [ cpanel ]  # Specify branch to trigger deployment
+    branches:
+      - cpanel
 
 jobs:
-  build_and_deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4 
-      
-    - name: Setup Flutter
-      uses: subosito/flutter-action@v2  
-      with:
-        flutter-version: '3.27.3'  # Specify the Flutter version to use
-        channel: 'stable'  # Use the stable channel for Flutter
-        
-    - name: Get dependencies
-      run: flutter pub get  
-      
-    - name: Enable web
-      run: flutter config --enable-web 
-      
-    - name: Build web
-      run: flutter build web --release 
-      
-    - name: Deploy via SFTP
-      uses: wlixcc/SFTP-Deploy-Action@v1.2.4  # Action to deploy files via SFTP
-      with:
-        server: ${{ secrets.CPANEL_FTP_HOST }}  # cPanel FTP server address
-        username: ${{ secrets.CPANEL_FTP_USERNAME }}  # cPanel FTP username
-        password: ${{ secrets.CPANEL_FTP_PASSWORD }}  # cPanel FTP password
-        local_path: './build/web/*'  # Path to the built web files
-        remote_path: ${{ secrets.CPANEL_FTP_PATH }}  # Remote path on the server
-        delete_remote_files: false  # Deletes remote files not present in local path
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.27.3'  # Replace with your Flutter version
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Build Flutter Web
+        run: flutter build web --release
+
+      - name: Deploy to cPanel via FTP
+        uses: SamKirkland/FTP-Deploy-Action@4.3.4
+        with:
+          server: ${{ secrets.CPANEL_FTP_HOST }}  # cPanel FTP server address
+          username: ${{ secrets.CPANEL_FTP_USERNAME }}  # cPanel FTP username
+          password: ${{ secrets.CPANEL_FTP_PASSWORD }}  # cPanel FTP password
+          server-dir: ${{ secrets.CPANEL_FTP_PATH }}  # Remote path on the server
+          local-dir: build/web
+          dangerous-clean-slate: true
