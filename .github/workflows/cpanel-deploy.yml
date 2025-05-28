@@ -43,7 +43,7 @@ jobs:
         FTP_PATH: ${{ secrets.CPANEL_FTP_PATH }}
       run: |
         cd build/web
-        lftp -e "set ssl:verify-certificate no; open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_SERVER; mirror -Rve --exclude .git --exclude .github --exclude **/.DS_Store . $FTP_PATH; quit"
+        lftp -e "set ssl:verify-certificate no; open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_SERVER; mirror -Rve . $FTP_PATH; quit"
         
     - name: Verify deployment
       run: |
