@@ -29,7 +29,7 @@ jobs:
       - name: Deploy to cPanel via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          server: ${{ secrets.CPANEL_FTP_HOST }}  # cPanel FTP server address
+          server: ${{ secrets.CPANEL_FTP_HOST }}  # cPanel FTP server address.
           username: ${{ secrets.CPANEL_FTP_USERNAME }}  # cPanel FTP username
           password: ${{ secrets.CPANEL_FTP_PASSWORD }}  # cPanel FTP password
           server-dir: ${{ secrets.CPANEL_FTP_PATH }}  # Remote path on the server
